@@ -1,0 +1,26 @@
+extends base
+
+block content
+    h1 Rejestracja
+    form(id="registrationForm" onsubmit="return false;")
+        div
+            label(for="username") Username 
+            input(type="text" id="username" name="username" required)
+        div
+            label(for="email") email 
+            input(type="email" id="email" name="email" required)
+        div
+            label(for="name") Imię 
+            input(type="text" id="name" name="name" required)
+        div
+            label(for="surname") Nazwisko 
+            input(type="text" id="surname" name="surname" required)
+        div
+            label(for="password") Hasło 
+            input(type="password" id="password" required)
+        div
+            label(for="confirmPassword") Powtórz hasło  
+            input(type="password" id="confirmPassword" required)
+        div
+            input(type="submit" value="Załóż konto")
+        p#registrationError(style="color: red;")
