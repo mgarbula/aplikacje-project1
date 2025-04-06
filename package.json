@@ -1,0 +1,31 @@
+{
+  "name": "project1",
+  "version": "1.0.0",
+  "description": "Project for Projektowanie Aplikacji Internetowych class",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mgarbula/aplikacje-project1.git"
+  },
+  "author": "mgarbula",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mgarbula/aplikacje-project1/issues"
+  },
+  "homepage": "https://github.com/mgarbula/aplikacje-project1#readme",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "body-parser": "^2.2.0",
+    "cookie-parser": "^1.4.7",
+    "express": "^5.1.0",
+    "express-session": "^1.18.1",
+    "pug": "^3.0.3",
+    "sequelize": "^6.37.7",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7"
+  }
+}
