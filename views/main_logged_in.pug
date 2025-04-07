@@ -5,3 +5,8 @@ block content
     form(id="logout" onsubmit="return false;")
         input(type="submit" value="Wyloguj się")
         p#logoutError(style="color: red;")
+    button(type="button" value="Moje maszyny") Moje maszyny
+    button(type="button" value="Wszystkie maszyny") Wszystkie maszyny
+    button(type="button" value="Moje konto") Moje konto
+    block admin
+    script(src="/scripts/logout.js")

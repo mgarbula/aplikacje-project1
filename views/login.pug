@@ -4,10 +4,11 @@ block content
     form(id="loginForm" onsubmit="return false;")
         div
             label(for="username") Username 
-            input(type="text" id="username" name="username")
+            input(type="text" id="username" name="username" value="mgarbula")
         div
             label(for="password") Password 
-            input(type="password" id="password")
+            input(type="password" id="password" value="test")
         div
             input(type="submit" value="Zaloguj się")
         p#loginError(style="color: red;")
+    script(src="/scripts/login.js")

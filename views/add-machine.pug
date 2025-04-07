@@ -1,0 +1,19 @@
+extends main_logged_in_admin 
+
+block management 
+    h1 Dodaj maszynę
+    form(id="addMachineForm" onsubmit="return false;")
+        div 
+            label(for="name") Nazwa maszyny 
+            input(type="text" id="name" name="name" required)
+        div 
+            label(for="serial_number") Numer seryjny
+            input(type="text" id="serial_number" name="serial_number" required)
+        div 
+            label(for="description") Opis (opcjonalny)
+            input(type="text" id="description" name="description")
+        div 
+            input(type="submit" value="Dodaj maszynę")
+        p#addMachineError(style="color: red;")
+    script(src="/scripts/admin/add-machine.js" type="module")
+    script(src="/scripts/helpers.js" type="module")

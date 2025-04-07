@@ -32,7 +32,7 @@ async function loginUser(req, res, sequelize) {
 		if (user && password_hash === user.password_hash) {
 			req.session.userID = user.id;
             req.session.username = user.username;
-            req.session.isAdmin = user.isAdmin;
+            req.session.isAdmin = user.is_admin;
             res.status(200).json({ success: true, message: 'Zalogowano!' });
 		} else {
             res.status(401).json({ success: false, message: 'Invalid username or password!' });

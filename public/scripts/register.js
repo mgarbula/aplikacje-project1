@@ -1,3 +1,5 @@
+import { postResponse } from './helpers.js';
+
 const registrationForm = document.getElementById('registrationForm');
 const registrationError = document.getElementById('registrationError');
 
@@ -20,29 +22,20 @@ registrationForm.addEventListener('submit', async (event) => {
     hashObj.update(password);
     const password_hash = hashObj.getHash("HEX");
 
-    try {
-        const response = await fetch('/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                username,
-                email,
-                name,
-                surname,
-                password_hash,
-            })
-        });
+    const dataArray = [
+        { key: 'username', value: username },
+        { key: 'email', value: email },
+        { key: 'name', value: name },
+        { key: 'surname', value: surname },
+        { key: 'password_hash', value: password_hash },
+    ];
 
-        const data = await response.json();
-        if (response.ok && data.success) {
-            window.location.href = '/login';
-        } else {
-            registrationError.textContent = data.error;
-        }
-    } catch (error) {
-        console.error('Error during registration:', error);
-        registrationError.textContent = 'Błąd rejestracji. Spróbuj ponownie.';
-    }
+    postResponse(
+        dataArray,
+        '/register',
+        '/login',
+        'Error during registration:',
+        'Błąd rejestracji. Spróbuj ponownie.',
+        registrationError,
+    );
 });

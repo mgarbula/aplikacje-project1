@@ -55,7 +55,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => {
 	if (req.session.userID) {
-		res.render('main_logged_in', {username: req.session.username});
+		if (req.session.isAdmin === 1) {
+			res.render('main_logged_in_admin', {username: req.session.username});
+		} else {
+			res.render('main_logged_in', {username: req.session.username});
+		}
 	} else {
 		res.render('main_logged_out');
 	}
@@ -71,6 +75,38 @@ app.get('/register', (req, res) => {
 		res.redirect('/');
 	} else {
 		res.render('register');
+	}
+});
+
+app.get('/add-machine', (req, res) => {
+	if (req.session.isAdmin === 1) {
+		res.render('add-machine', {username: req.session.username});
+	} else {
+		res.send("Nie masz praw administratora!");
+	}
+});
+
+app.post('/add-machine', (req, res) => {
+	if (req.session.isAdmin === 1) {
+		res.status(201).json({ success: true, message: 'Dodano maszynę!' });
+	} else {
+		res.send("Nie masz praw administratora!");
+	}
+});
+
+app.get('/machines-management', (req, res) => {
+	if (req.session.isAdmin === 1) {
+		res.render('machine_management');
+	} else {
+		res.send("Nie masz praw administratora!");
+	}
+});
+
+app.get('/users-management', (req, res) => {
+	if (req.session.isAdmin === 1) {
+		res.send("users management");
+	} else {
+		res.send("Nie masz praw administratora!");
 	}
 });
 
