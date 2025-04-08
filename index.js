@@ -105,9 +105,17 @@ app.get('/machines-management', async (req, res) => {
 	}
 });
 
-app.put('/modify-machine', async (req, res) => {
+app.put('/machines-management', async (req, res) => {
 	if (req.session.isAdmin === 1) {
 		servAdmin.modifyMachine(req, res, sequelize);
+	} else {
+		res.send("Nie masz praw administratora!");
+	}
+});
+
+app.delete('/machines-management', async (req, res) => {
+	if (req.session.isAdmin === 1) {
+		servAdmin.deleteMachine(req, res, sequelize);
 	} else {
 		res.send("Nie masz praw administratora!");
 	}

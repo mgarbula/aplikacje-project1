@@ -39,4 +39,20 @@ async function modifyMachine(req, res, sequelize) {
     }
 }
 
-module.exports = {addMachine, modifyMachine};
+async function deleteMachine(req, res, sequelize) {
+    const Machine = require('../models/machine')(sequelize);
+    const { id } = req.body;
+    try {
+        await Machine.destroy({
+            where: {
+                id: id,
+            },
+        });
+        res.status(201).json({ success: true, message: 'Maszyna została usunięta!' });
+    } catch (error) {
+        console.error('Error during machine deletion:', error);
+        res.status(500).json({ success: false, error: 'Błąd serwera' });
+    }
+}
+
+module.exports = {addMachine, modifyMachine, deleteMachine};

@@ -14,9 +14,9 @@ document.addEventListener('DOMContentLoaded', () => {
         button.addEventListener('click', modifyMachine);
     });
 
-    // deleteButtons.forEach(button => {
-    //     button.addEventListener('click', deleteMachine);
-    // });
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', deleteMachine);
+    });
 
     function modifyMachine(event) {
         const button = event.target;
@@ -39,14 +39,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
         request(
             dataArray,
-            'modify-machine',
+            '/machines-management',
             'PUT',
             '/machines-management',
             'Error during modification:',
             'Błąd modyfikacji. Spróbuj ponownie.'
         );
+    }
 
-        // console.log(`machine ID: ${machineId}`);
-        // console.log(`name = ${name}, srl = ${srl}, dscr = ${dscr}`);
+    function deleteMachine(event) {
+        const button = event.target;
+        const machineId = button.getAttribute("machineId");
+
+        const dataArray = [
+            { key: 'id', value: machineId },
+        ];
+
+        request(
+            dataArray,
+            '/machines-management',
+            'DELETE',
+            '/machines-management',
+            'Error during deletion:',
+            'Błąd usuwania. Spróbuj ponownie'
+        );
     }
 });
