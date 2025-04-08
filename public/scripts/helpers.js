@@ -1,6 +1,7 @@
-export async function postResponse(
+export async function request(
     dataArray,
     href_fetch,
+    method,
     href_redirect,
     consoleError,
     userError,
@@ -9,6 +10,7 @@ export async function postResponse(
     /**
      * @param {Array} dataArray - Array with data to send
      * @param {string} href_fetch - Href to send data
+     * @param {string} method - HTML method
      * @param {string} href_redirect - Href to redirect after success
      * @param {string} consoleError - Error displayed in console
      * @param {string} userError - Error displayed to user (in Polish)
@@ -21,7 +23,7 @@ export async function postResponse(
 
     try {
         const response = await fetch(href_fetch, {
-            method: 'POST',
+            method: method,
             headers: {
                 'Content-Type': 'application/json',
             },

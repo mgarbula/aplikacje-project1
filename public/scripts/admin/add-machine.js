@@ -1,7 +1,7 @@
 const addMachineForm = document.getElementById('addMachineForm');
 const addMachineError = document.getElementById('addMachineError');
 
-import { postResponse } from "../helpers.js";
+import { request } from "../helpers.js";
 
 addMachineForm.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -16,9 +16,10 @@ addMachineForm.addEventListener('submit', async (event) => {
         { key: 'description', value: description },
     ];
     
-    postResponse(
+    request(
         dataArray,
         '/add-machine',
+        'POST',
         '/machines-management',
         'Error during adding machine',
         'Nie udało się dodać maszyny.',

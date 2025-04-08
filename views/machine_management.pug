@@ -2,8 +2,16 @@ extends main_logged_in_admin
 
 block content 
     button(type="button" id="addMachine") Dodaj maszynę
-    //- br
-    //- for machine in machines
-    //-     div 
-    script(src="/scripts/admin/machine-mgmt.js")
+    br
+    table
+        for machine in machines
+            tr
+                td
+                    input(type="text" class="machine-name" value=machine.name)
+                    input(type="text" class="machine-srl" value=machine.serial_number)
+                    input(type="text" class="machine-dscr" value=machine.description)
+                    input(type="button" class="modify-button" value="Modyfikuj" machineId=machine.id)
+                    input(type="button" class="delete-button" value="Usuń" machineId=machine.id)
+
+    script(src="/scripts/admin/machine-mgmt.js" type="module")
             

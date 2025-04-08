@@ -1,4 +1,4 @@
-import { postResponse } from './helpers.js';
+import { request } from './helpers.js';
 
 const registrationForm = document.getElementById('registrationForm');
 const registrationError = document.getElementById('registrationError');
@@ -30,9 +30,10 @@ registrationForm.addEventListener('submit', async (event) => {
         { key: 'password_hash', value: password_hash },
     ];
 
-    postResponse(
+    request(
         dataArray,
         '/register',
+        'POST',
         '/login',
         'Error during registration:',
         'Błąd rejestracji. Spróbuj ponownie.',

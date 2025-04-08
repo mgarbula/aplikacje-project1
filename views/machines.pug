@@ -1,0 +1,6 @@
+block machines
+    h2 Dostępne maszyny
+    ul
+        each machine in machines
+            li
+                a(href='http://localhost:3000/machine/' + machine.id)= machine.name

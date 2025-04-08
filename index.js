@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const app = express()
 const path = require('path');
 const servUser = require('./server/user.js');
+const servAdmin = require('./server/admin.js');
 const port = 3000
 
 const sequelize =  new Sequelize({
@@ -53,12 +54,13 @@ app.set('view engine', 'pug');
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
 	if (req.session.userID) {
+		const machines = await Machine.findAll();
 		if (req.session.isAdmin === 1) {
-			res.render('main_logged_in_admin', {username: req.session.username});
+			res.render('main_logged_in_admin', {username: req.session.username, machines: machines});
 		} else {
-			res.render('main_logged_in', {username: req.session.username});
+			res.render('main_logged_in', {username: req.session.username, machines: machines});
 		}
 	} else {
 		res.render('main_logged_out');
@@ -88,15 +90,24 @@ app.get('/add-machine', (req, res) => {
 
 app.post('/add-machine', (req, res) => {
 	if (req.session.isAdmin === 1) {
-		res.status(201).json({ success: true, message: 'Dodano maszynę!' });
+		servAdmin.addMachine(req, res, sequelize);
 	} else {
 		res.send("Nie masz praw administratora!");
 	}
 });
 
-app.get('/machines-management', (req, res) => {
+app.get('/machines-management', async (req, res) => {
 	if (req.session.isAdmin === 1) {
-		res.render('machine_management');
+		const machines = await Machine.findAll();
+		res.render('machine_management', {machines: machines});
+	} else {
+		res.send("Nie masz praw administratora!");
+	}
+});
+
+app.put('/modify-machine', async (req, res) => {
+	if (req.session.isAdmin === 1) {
+		servAdmin.modifyMachine(req, res, sequelize);
 	} else {
 		res.send("Nie masz praw administratora!");
 	}
