@@ -1,7 +1,6 @@
 const { Sequelize } = require('sequelize');
 
-async function addMachine(req, res, sequelize) {
-    const Machine = require('../models/machine')(sequelize);
+async function addMachine(req, res, Machine) {
     const { name, serial_number, description } = req.body;
     try {
         const existingMachine = await Machine.findOne({ where: { [Sequelize.Op.or]: [ {serial_number} ] } });
@@ -21,8 +20,7 @@ async function addMachine(req, res, sequelize) {
     }
 }
 
-async function modifyMachine(req, res, sequelize) {
-    const Machine = require('../models/machine')(sequelize);
+async function modifyMachine(req, res, Machine) {
     const { id, name, serial_number, description } = req.body;
     try {
         const machine = await Machine.findOne({ where: { [Sequelize.Op.or]: [ {id} ] } });
@@ -39,8 +37,7 @@ async function modifyMachine(req, res, sequelize) {
     }
 }
 
-async function deleteMachine(req, res, sequelize) {
-    const Machine = require('../models/machine')(sequelize);
+async function deleteMachine(req, res, Machine) {
     const { id } = req.body;
     try {
         await Machine.destroy({

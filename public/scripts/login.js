@@ -1,5 +1,6 @@
 const loginForm = document.getElementById('loginForm');
 const loginError = document.getElementById('loginError');
+import { request } from './helpers.js';
 
 loginForm.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -11,26 +12,18 @@ loginForm.addEventListener('submit', async (event) => {
     hashObj.update(password);
     const password_hash = hashObj.getHash("HEX");
 
-    try {
-        const response = await fetch('/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                username,
-                password_hash,
-            })
-        });
+    const dataArray = [
+        { key: 'username', value: username },
+        { key: 'password_hash', value: password_hash },
+    ];
 
-        const data = await response.json();
-        if (response.ok && data.success) {
-            window.location.href = '/';
-        } else {
-            loginError.textContent = data.error;
-        }
-    } catch (error) {
-        console.error('Error during login:', error);
-        loginError.textContent = 'Błąd logowania. Spróbuj ponownie.';
-    }
+    request(
+        dataArray,
+        '/login',
+        'POST',
+        '/',
+        'Error during login:',
+        'Błąd logowania. Spróbuj ponownie.',
+        loginError,
+    );
 });

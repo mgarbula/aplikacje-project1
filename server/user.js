@@ -1,7 +1,7 @@
 const { Sequelize } = require('sequelize');
+const { getTime, getDate } = require('./time');
 
-async function registerUser(req, res, sequelize) {
-    const User = require('../models/user')(sequelize);
+async function registerUser(req, res, User) {
     const {username, email, name, surname, password_hash} = req.body;
     try {
         const existingUser = await User.findOne({where: { [Sequelize.Op.or]: [{ username }, { email }] }});
@@ -24,8 +24,7 @@ async function registerUser(req, res, sequelize) {
     }
 }
 
-async function loginUser(req, res, sequelize) {
-    const User = require('../models/user')(sequelize);
+async function loginUser(req, res, User) {
     const { username, password_hash } = req.body;
 	try {
 		const user = await User.findOne({ where: { [Sequelize.Op.or]: [{username}] } });
@@ -35,7 +34,7 @@ async function loginUser(req, res, sequelize) {
             req.session.isAdmin = user.is_admin;
             res.status(200).json({ success: true, message: 'Zalogowano!' });
 		} else {
-            res.status(401).json({ success: false, message: 'Invalid username or password!' });
+            res.status(401).json({ success: false, error: 'Niepoprawna nazwa użytkownika lub hasło!' });
         }
 	} catch (error) {
         console.error('Error during login:', error);
@@ -54,4 +53,117 @@ async function logoutUser(req, res) {
     });
 }
 
-module.exports = {registerUser, loginUser, logoutUser};
+async function getMachine(req, res, User, Reservation, Machine) {
+    const id = req.params.id;
+    try {
+        const machine = await Machine.findOne({ where: { [Sequelize.Op.or]: [ {id} ] } });
+        const reservations = await Reservation.findAll({
+            where: {
+                machine_id: id
+            },
+            include: [
+                {
+                    model: User,
+                    as: 'user'
+                },
+            ],
+        });
+
+        reservations.sort(function(a, b) {return (a.date_from > b.date_from) ? 1 : (b.date_from > a.date_from) ? -1 : 0})
+        const dates_from = reservations.map(r => getTime(r.date_from));
+        const dates_to = reservations.map(r => getTime(r.date_to));
+
+        res.render('machine', {
+            username: req.session.username,
+            machine: machine,
+            reservations: reservations,
+            dates_from: dates_from,
+            dates_to: dates_to,
+            is_admin: req.session.isAdmin === 1
+        });
+    } catch (error) {
+        console.error('Error during fetching machine:', error);
+        res.status(500).json({ success: false, error: 'Błąd serwera' });
+    }
+}
+
+async function getReserveMachine(req, res, Reservation, Machine) {
+    const id = req.params.id;
+    try {
+        const reservations = await Reservation.findAll({
+            where: {
+                machine_id: id
+            }
+        });
+        const machine = await Machine.findOne({
+            where: { id: id }
+        });
+        const today = new Date();
+        Date.prototype.addDays = function(days) {
+            var date = new Date(this.valueOf());
+            date.setDate(date.getDate() + days);
+            return date;
+        }
+        const days = Array.from(
+            Array(120).keys()
+        ).map(i => getDate(today.addDays(i).toString()));
+        
+        res.render('reserve', {
+            username: req.session.username,
+            is_admin: req.session.isAdmin === 1,
+            machines: [],
+            show_machines: false,
+            machine_name: machine.name,
+            days: days,
+        });
+    } catch (error) {
+        console.error('Error during fetching reservations:', error);
+        res.status(500).json({ success: false, error: 'Błąd serwera' });
+    }
+}
+
+async function makeReservation(req, res, Reservation) {
+    const id = req.params.id;
+    const { from, to } = req.body;
+    try {
+
+        const reservations = await Reservation.findAll({
+            where: {
+                machine_id: id
+            }
+        });
+
+        const froms = reservations.map(r =>  getDate(r.date_from.toString()));
+
+        for (f of froms) {
+            if (f >= from && f <= to) {
+                res.status(401).json({ 
+                    success: false,
+                    error: "Wybrany zakres dat jest już zajęty",
+                });
+                return;
+            }
+        }
+
+        await Reservation.create({
+            date_from: new Date(from),
+            date_to: new Date(to),
+            user_id: req.session.userID,
+            machine_id: id,
+        });
+
+        res.status(200).json({ success: true, message: 'Rezerwacja udana' });
+    } catch (error) {
+        console.error('Error during making reservation:', error);
+        res.status(500).json({ success: false, error: 'Błąd serwera' });
+    }
+}
+
+module.exports = {
+    registerUser,
+    loginUser,
+    logoutUser,
+    getMachine,
+    getReserveMachine,
+    makeReservation,
+};

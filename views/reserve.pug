@@ -1,0 +1,20 @@
+extends main_logged_in
+
+block reserve
+    h3 Rezerwacja #{machine_name}
+    form(id="reserveForm" onsubmit="return false;")
+        div
+            label Od:
+            select(name="from" id="from")
+                each day in days
+                    option(value=day)= day
+        div
+            label Do:
+            select(name="to" id="to")
+                each day in days
+                    option(value=day)= day
+        div
+            input(type="submit" value="Rezerwuj")
+        p#reserveError(style="color: red;")
+    script(src="/scripts/reserve.js" type="module")
+    

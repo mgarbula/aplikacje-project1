@@ -1,0 +1,16 @@
+extends main_logged_in
+
+block machine 
+    div 
+        p Nazwa: #{machine.name }
+        p Numer seryjny: #{machine.serial_number }
+        p Opis: #{machine.description}
+        input(type="button" value="Rezerwuj" id="reserve" machineId=machine.id)
+    table
+        - var i = 0;
+        while i < reservations.length
+            tr
+                td
+                    p Nazwa użytkownika: #{reservations[i].user.username} Od: #{dates_from[i]} Do: #{dates_to[i]}
+            - i++;
+    script(src="/scripts/machine.js")

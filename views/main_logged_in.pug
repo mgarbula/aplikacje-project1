@@ -8,6 +8,12 @@ block content
     button(type="button" value="Moje maszyny") Moje maszyny
     button(type="button" value="Wszystkie maszyny") Wszystkie maszyny
     button(type="button" value="Moje konto") Moje konto
-    block admin
+    if is_admin
+        button(type="button" id="machineMgmt") Zarządzanie maszynami
+        button(type="button" id="userMgmt") Zarządzanie kontami
+        block management
     include machines.pug
+    block machine
+    block reserve
     script(src="/scripts/logout.js")
+    script(src="/scripts/admin/admin-buttons.js" type="module")
