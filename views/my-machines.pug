@@ -1,0 +1,15 @@
+extends main_logged_in
+
+block my_machines 
+    if reservations.length > 0
+        table 
+            - var i = 0
+            while i < reservations.length
+                tr 
+                    td 
+                        p Maszyna: #{reservations[i].machine.name} Od: #{dates_from[i]} Do: #{dates_to[i]} 
+                        input(type="button" class="delete-reservation" value="Usuń" resID=reservations[i].id)
+                - i++;
+    else
+        h3 Nie masz jeszcze żadnych rezerwacji
+    script(src="/scripts/my-machines.js" type="module")

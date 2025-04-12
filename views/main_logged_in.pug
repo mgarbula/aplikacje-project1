@@ -5,9 +5,9 @@ block content
     form(id="logout" onsubmit="return false;")
         input(type="submit" value="Wyloguj się")
         p#logoutError(style="color: red;")
-    button(type="button" value="Moje maszyny") Moje maszyny
-    button(type="button" value="Wszystkie maszyny") Wszystkie maszyny
-    button(type="button" value="Moje konto") Moje konto
+    button(type="button" value="Moje maszyny" id="myMachines") Moje maszyny
+    button(type="button" value="Wszystkie maszyny" id="allMachines") Wszystkie maszyny
+    button(type="button" value="Moje konto" id="myAccount") Moje konto
     if is_admin
         button(type="button" id="machineMgmt") Zarządzanie maszynami
         button(type="button" id="userMgmt") Zarządzanie kontami
@@ -15,5 +15,8 @@ block content
     include machines.pug
     block machine
     block reserve
+    block my_machines
     script(src="/scripts/logout.js")
-    script(src="/scripts/admin/admin-buttons.js" type="module")
+    script(src="/scripts/user-buttons.js")
+    if is_admin
+        script(src="/scripts/admin/admin-buttons.js")

@@ -53,6 +53,18 @@ async function logoutUser(req, res) {
     });
 }
 
+function resesrvationsDates(reservations) {
+    // show only reservations that are not finished yet
+    const today = getDate(new Date().toString());
+    reservations.filter(r => getDate(r.date_to.toString()) > today);
+
+    reservations.sort(function(a, b) {return (a.date_from > b.date_from) ? 1 : (b.date_from > a.date_from) ? -1 : 0})
+    const dates_from = reservations.map(r => getTime(r.date_from));
+    const dates_to = reservations.map(r => getTime(r.date_to));
+
+    return { dates_from: dates_from, dates_to: dates_to };
+}
+
 async function getMachine(req, res, User, Reservation, Machine) {
     const id = req.params.id;
     try {
@@ -69,9 +81,7 @@ async function getMachine(req, res, User, Reservation, Machine) {
             ],
         });
 
-        reservations.sort(function(a, b) {return (a.date_from > b.date_from) ? 1 : (b.date_from > a.date_from) ? -1 : 0})
-        const dates_from = reservations.map(r => getTime(r.date_from));
-        const dates_to = reservations.map(r => getTime(r.date_to));
+        const { dates_from, dates_to } = resesrvationsDates(reservations);
 
         res.render('machine', {
             username: req.session.username,
@@ -159,6 +169,50 @@ async function makeReservation(req, res, Reservation) {
     }
 }
 
+async function getMyMachines(req, res, Machine, Reservation) {
+    try {
+        const reservations = await Reservation.findAll({
+            where: {
+                user_id: req.session.userID,
+            },
+            include: [
+                {
+                    model: Machine,
+                    as: 'machine'
+                },
+            ],
+        });
+
+        const { dates_from, dates_to } = resesrvationsDates(reservations);
+        res.render('my-machines', {
+            username: req.session.username,
+            machine: [],
+            reservations: reservations,
+            dates_from: dates_from,
+            dates_to: dates_to,
+            is_admin: req.session.isAdmin === 1
+        });
+    } catch (error) {
+        console.error('Error during fetching my reservations:', error);
+        res.status(500).json({ success: false, error: 'Błąd serwera' });
+    }
+}
+
+async function deleteReservation(req, res, Reservation) {
+    const { id } = req.body;
+    try {
+        await Reservation.destroy({
+            where: {
+                id: id,
+            },
+        });
+        res.status(200).json({ success: true, message: 'Rezerwacja usunięta' });
+    } catch (error) {
+        console.error('Error during deleting reservation');
+        res.status(500).json({ success: false, error: 'Błąd serwera' });
+    }
+}
+
 module.exports = {
     registerUser,
     loginUser,
@@ -166,4 +220,6 @@ module.exports = {
     getMachine,
     getReserveMachine,
     makeReservation,
+    getMyMachines,
+    deleteReservation,
 };

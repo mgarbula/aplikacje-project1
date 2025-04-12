@@ -180,6 +180,22 @@ app.get('/users-management', (req, res) => {
 	}
 });
 
+app.get('/my-machines', (req, res) => {
+	if (req.session.userID != null) {
+		servUser.getMyMachines(req, res, Machine, Reservation);
+	} else {
+		res.redirect('/')
+	}
+});
+
+app.delete('/my-machines', (req, res) => {
+	if (req.session.userID != null) {
+		servUser.deleteReservation(req, res, Reservation);
+	} else {
+		res.redirect('/')
+	}
+});
+
 app.post('/register', async (req, res) => {
 	servUser.registerUser(req, res, User);
 });
