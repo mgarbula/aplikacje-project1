@@ -186,7 +186,6 @@ async function getMyMachines(req, res, Machine, Reservation) {
         const { dates_from, dates_to } = resesrvationsDates(reservations);
         res.render('my-machines', {
             username: req.session.username,
-            machine: [],
             reservations: reservations,
             dates_from: dates_from,
             dates_to: dates_to,
@@ -213,6 +212,57 @@ async function deleteReservation(req, res, Reservation) {
     }
 }
 
+async function myAccount(req, res, User) {
+    try {
+        const me = await User.findOne({
+            where: {
+                id: req.session.userID,
+            },
+        });
+        res.render('my-account', {
+            username: req.session.username,
+            me: me,
+            is_admin: req.session.isAdmin === 1
+        })
+    } catch (error) {
+        console.error('Error during fetching account:', error);
+        res.status(500).json({ success: false, error: 'Błąd serwera' });
+    }
+}
+
+async function editAccount(req, res, User) {
+    const {username, email, name, surname, password_hash} = req.body;
+    try {
+        const user = await User.findOne({
+            where: {
+                id: req.session.userID,
+            },
+        });
+        const userPass = user.password_hash;
+        var passToPut;
+        if (password_hash === '') {
+            passToPut = userPass;
+        } else {
+            passToPut = password_hash;
+        }
+
+        user.set({
+            username: username,
+            email: email,
+            name: name,
+            surname: surname,
+            password_hash: passToPut,
+        });
+        await user.save();
+        
+        req.session.username = user.username;
+        res.status(201).json({ success: true, message: 'Konto zostało zedytowane' });
+    } catch (error) {
+        console.error('Error during editing account:', error);
+        res.status(500).json({ success: false, error: 'Błąd serwera' });
+    }
+}
+
 module.exports = {
     registerUser,
     loginUser,
@@ -222,4 +272,6 @@ module.exports = {
     makeReservation,
     getMyMachines,
     deleteReservation,
+    myAccount,
+    editAccount,
 };

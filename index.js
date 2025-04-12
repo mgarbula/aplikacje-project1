@@ -196,6 +196,22 @@ app.delete('/my-machines', (req, res) => {
 	}
 });
 
+app.get('/account', (req, res) => {
+	if (req.session.userID != null) {
+		servUser.myAccount(req, res, User);
+	} else {
+		res.redirect('/')
+	}
+});
+
+app.put('/account', (req, res) => {
+	if (req.session.userID != null) {
+		servUser.editAccount(req, res, User);
+	} else {
+		res.redirect('/')
+	}
+});
+
 app.post('/register', async (req, res) => {
 	servUser.registerUser(req, res, User);
 });
