@@ -42,15 +42,19 @@ async function loginUser(req, res, User) {
     }
 }
 
-async function logoutUser(req, res) {
+async function logout(req, res, message) {
     req.session.destroy((err) => {
         if (err) {
             console.error('Error destroying session:', err);
             return res.status(500).json({ success: false, message: 'Błąd serwera' });
         }
         //res.clear
-        res.status(200).json({ success: true, message: 'Wylogowano poprawnie!' });
+        res.status(200).json({ success: true, message: message });
     });
+}
+
+async function logoutUser(req, res) {
+    logout(req, res, 'Wylogowano poprawnie!');
 }
 
 function resesrvationsDates(reservations) {
@@ -263,6 +267,21 @@ async function editAccount(req, res, User) {
     }
 }
 
+async function deleteAccount(req, res, User) {
+    try {
+        await User.destroy({
+            where: {
+                id: req.session.userID,
+            },
+        });
+
+        logout(req, res, 'Konto zostało usunięte');
+    } catch (error) {
+        console.error('Error during deleting account:', error);
+        res.status(500).json({ success: false, error: 'Błąd serwera' });
+    }
+}
+
 module.exports = {
     registerUser,
     loginUser,
@@ -274,4 +293,5 @@ module.exports = {
     deleteReservation,
     myAccount,
     editAccount,
+    deleteAccount,
 };

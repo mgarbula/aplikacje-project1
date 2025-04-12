@@ -212,6 +212,14 @@ app.put('/account', (req, res) => {
 	}
 });
 
+app.delete('/account', (req, res) => {
+	if (req.session.userID != null) {
+		servUser.deleteAccount(req, res, User);
+	} else {
+		res.redirect('/')
+	}
+});
+
 app.post('/register', async (req, res) => {
 	servUser.registerUser(req, res, User);
 });

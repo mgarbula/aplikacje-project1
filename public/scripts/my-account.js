@@ -3,6 +3,8 @@ import { request } from './helpers.js';
 const editForm = document.getElementById('editAccount');
 const editError = document.getElementById('editError');
 
+const deleteButton = document.getElementById('delete');
+
 editForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
@@ -53,5 +55,18 @@ editForm.addEventListener('submit', async (event) => {
         'Error during editing account:',
         'Błąd edycji. Spróbuj ponownie',
         editError,
+    );
+});
+
+deleteButton.addEventListener('click', async (event) => {
+    event.preventDefault();
+    
+    request(
+        [],
+        '/account',
+        'DELETE',
+        '/',
+        'Error during account deletion:',
+        'Błąd usuwania. Spróbuj ponownie',
     );
 });
