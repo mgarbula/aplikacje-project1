@@ -60,13 +60,13 @@ async function logoutUser(req, res) {
 function resesrvationsDates(reservations) {
     // show only reservations that are not finished yet
     const today = getDate(new Date().toString());
-    reservations.filter(r => getDate(r.date_to.toString()) > today);
+    const res_filtered = reservations.filter(r => getDate(r.date_to.toString()) > today);
 
-    reservations.sort(function(a, b) {return (a.date_from > b.date_from) ? 1 : (b.date_from > a.date_from) ? -1 : 0})
-    const dates_from = reservations.map(r => getTime(r.date_from));
-    const dates_to = reservations.map(r => getTime(r.date_to));
+    res_filtered.sort(function(a, b) {return (a.date_from > b.date_from) ? 1 : (b.date_from > a.date_from) ? -1 : 0})
+    const dates_from = res_filtered.map(r => getTime(r.date_from));
+    const dates_to = res_filtered.map(r => getTime(r.date_to));
 
-    return { dates_from: dates_from, dates_to: dates_to };
+    return { dates_from: dates_from, dates_to: dates_to, res_filtered: res_filtered };
 }
 
 async function getMachine(req, res, User, Reservation, Machine) {
@@ -85,12 +85,12 @@ async function getMachine(req, res, User, Reservation, Machine) {
             ],
         });
 
-        const { dates_from, dates_to } = resesrvationsDates(reservations);
+        const { dates_from, dates_to, res_filtered } = resesrvationsDates(reservations);
 
         res.render('machine', {
             username: req.session.username,
             machine: machine,
-            reservations: reservations,
+            reservations: res_filtered,
             dates_from: dates_from,
             dates_to: dates_to,
             is_admin: req.session.isAdmin === 1
@@ -187,10 +187,10 @@ async function getMyMachines(req, res, Machine, Reservation) {
             ],
         });
 
-        const { dates_from, dates_to } = resesrvationsDates(reservations);
+        const { dates_from, dates_to, res_filtered } = resesrvationsDates(reservations);
         res.render('my-machines', {
             username: req.session.username,
-            reservations: reservations,
+            reservations: res_filtered,
             dates_from: dates_from,
             dates_to: dates_to,
             is_admin: req.session.isAdmin === 1
