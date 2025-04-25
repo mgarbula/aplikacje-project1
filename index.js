@@ -34,12 +34,12 @@ async function syncDatabase() {
 
 syncDatabase();
 
-module.exports = {
-	sequelize,
-	User,
-	Machine,
-	Reservation,
-};
+// module.exports = {
+// 	sequelize,
+// 	User,
+// 	Machine,
+// 	Reservation,
+// };
 
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -233,5 +233,5 @@ app.post('/logout', async (req, res) => {
 });
 
 app.listen(port, () => {
-	console.log(`Example app listening on port ${port}`);
+	console.log(`App listening on port ${port}`);
 });

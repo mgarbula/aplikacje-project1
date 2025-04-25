@@ -59,6 +59,10 @@ async function logoutUser(req, res) {
 
 function resesrvationsDates(reservations) {
     // show only reservations that are not finished yet
+    if (reservations.length === 0) {
+        return { dates_from: [], dates_to: [], res_filtered: [] };
+    }
+
     const today = getDate(new Date().toString());
     const res_filtered = reservations.filter(r => getDate(r.date_to.toString()) > today);
 

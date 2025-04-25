@@ -21,7 +21,7 @@ reserveForm.addEventListener('submit', async (event) => {
             dataArray,
             window.location.href,
             'POST',
-            window.location.href,
+            '/my-machines',
             'Error during reservation:',
             'Błąd rezerwacji. Spróbuj ponownie.',
             reserveError,
