@@ -8,6 +8,9 @@ For local testing it is recommended to add machines manually to db (or - if admi
 
 For now app has Polish UI. Maybe it will change in the future. 
 
+## Install dependencies
+`npm install`
+
 ## Run
 `npm run start`
 
