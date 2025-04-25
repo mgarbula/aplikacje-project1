@@ -48,7 +48,6 @@ async function logout(req, res, message) {
             console.error('Error destroying session:', err);
             return res.status(500).json({ success: false, message: 'Błąd serwera' });
         }
-        //res.clear
         res.status(200).json({ success: true, message: message });
     });
 }

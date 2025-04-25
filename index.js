@@ -34,13 +34,6 @@ async function syncDatabase() {
 
 syncDatabase();
 
-// module.exports = {
-// 	sequelize,
-// 	User,
-// 	Machine,
-// 	Reservation,
-// };
-
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(session({
@@ -58,9 +51,19 @@ app.get('/', async (req, res) => {
 	if (req.session.userID) {
 		const machines = await Machine.findAll();
 		if (req.session.isAdmin === 1) {
-			res.render('main_logged_in', {username: req.session.username, machines: machines, is_admin: true, show_machines: true});
+			res.render('main_logged_in', {
+				username: req.session.username,
+				machines: machines,
+				is_admin: true,
+				show_machines: true
+			});
 		} else {
-			res.render('main_logged_in', {username: req.session.username, machines: machines, is_admin: false, show_machines: true});
+			res.render('main_logged_in', {
+				username: req.session.username,
+				machines: machines,
+				is_admin: false,
+				show_machines: true
+			});
 		}
 	} else {
 		res.render('main_logged_out');
@@ -83,7 +86,11 @@ app.get('/register', (req, res) => {
 app.get('/add-machine', (req, res) => {
 	if (req.session.userID != null) {
 		if (req.session.isAdmin === 1) {
-			res.render('add-machine', {username: req.session.username, is_admin: true, show_machines: false});
+			res.render('add-machine', {
+				username: req.session.username,
+				is_admin: true,
+				show_machines: false
+			});
 		} else {
 			res.send("Nie masz praw administratora!");
 		}
@@ -93,7 +100,6 @@ app.get('/add-machine', (req, res) => {
 });
 
 app.get('/machine/:id', (req, res) => {
-	//res.send(`Machine id = ${req.params.id}`)
 	if (req.session.userID != null) {
 		servUser.getMachine(req, res, User, Reservation, Machine);
 	} else {
@@ -102,7 +108,6 @@ app.get('/machine/:id', (req, res) => {
 });
 
 app.get('/machine/:id/reserve', (req, res) => {
-	//res.send(`Machine id = ${req.params.id}`)
 	if (req.session.userID != null) {
 		servUser.getReserveMachine(req, res, Reservation, Machine);
 	} else {
@@ -111,7 +116,6 @@ app.get('/machine/:id/reserve', (req, res) => {
 });
 
 app.post('/machine/:id/reserve', (req, res) => {
-	//res.send(`Machine id = ${req.params.id}`)
 	if (req.session.userID != null) {
 		servUser.makeReservation(req, res, Reservation);
 	} else {
@@ -135,7 +139,12 @@ app.get('/machines-management', async (req, res) => {
 	if (req.session.userID != null) {
 		if (req.session.isAdmin === 1) {
 			const machines = await Machine.findAll();
-			res.render('machine_management', {username: req.session.username, is_admin: true, machines: machines, show_machines: false});
+			res.render('machine_management', {
+				username: req.session.username,
+				is_admin: true,
+				machines: machines,
+				show_machines: false
+			});
 		} else {
 			res.send("Nie masz praw administratora!");
 		}

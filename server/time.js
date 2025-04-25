@@ -38,8 +38,4 @@ function getDate(time) {
     }
 }
 
-function getHour(time) {
-    return time.substring(16, 21);
-}
-
 module.exports = { getTime, getDate };
