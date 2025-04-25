@@ -52,4 +52,19 @@ async function deleteMachine(req, res, Machine) {
     }
 }
 
-module.exports = {addMachine, modifyMachine, deleteMachine};
+async function modifyUser(req, res, User) {
+    const { id, is_admin } = req.body;
+    try {
+        const user = await User.findOne({ where: { [Sequelize.Op.or]: [ {id} ] } });
+        user.set({
+            is_admin: is_admin,
+        });
+        await user.save();
+        res.status(201).json({ success: true, message: 'Prawa użytkownika zostały zmienione!' });
+    } catch (error) {
+        console.error('Error during user modification:', error);
+        res.status(500).json({ success: false, error: 'Błąd serwera' });
+    }
+}
+
+module.exports = {addMachine, modifyMachine, deleteMachine, modifyUser};

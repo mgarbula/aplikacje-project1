@@ -1,0 +1,18 @@
+extends main_logged_in
+
+block management 
+    br
+    table 
+        for user in users 
+            tr 
+                td 
+                    input(type="text" value=user.username disabled)
+                    input(type="text" value=user.name disabled)
+                    input(type="text" value=user.surname disabled)
+                    if user.is_admin == 1
+                        input(type="text" class="is-admin" value="Admin" disabled)
+                        input(type="button" class="change-permissions" value="Usuń admina" id=user.id)
+                    else 
+                        input(type="text" class="is-admin" value="Zwykły user" disabled)
+                        input(type="button" class="change-permissions" value="Zrób admina" id=user.id)
+    script(src="/scripts/admin/users-mgmt.js" type="module")

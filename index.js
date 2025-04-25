@@ -168,10 +168,28 @@ app.delete('/machines-management', async (req, res) => {
 	}
 });
 
-app.get('/users-management', (req, res) => {
+app.get('/users-management', async (req, res) => {
 	if (req.session.userID != null) {
 		if (req.session.isAdmin === 1) {
-			res.send("users management");
+			const users = await User.findAll();
+			res.render('users_management', {
+				username: req.session.username,
+				is_admin: true,
+				users: users,
+				show_machines: false,
+			});
+		} else {
+			res.send("Nie masz praw administratora!");
+		}
+	} else {
+		res.redirect('/');
+	}
+});
+
+app.put('/users-management', (req, res) => {
+	if (req.session.userID != null) {
+		if (req.session.isAdmin === 1) {
+			servAdmin.modifyUser(req, res, User);
 		} else {
 			res.send("Nie masz praw administratora!");
 		}
